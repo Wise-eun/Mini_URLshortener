@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/tab_home"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:icon="@drawable/icon_home"
+        android:title="Home"
+        />
+
+
+    <item
+        android:id="@+id/tab_list"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:icon="@drawable/icon_list"
+        android:title="URL List"
+        />
+
+    <item
+        android:id="@+id/tab_graph"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:icon="@drawable/icon_graph"
+        android:title="URL Graph"
+        />
+
+
+
+</menu>
