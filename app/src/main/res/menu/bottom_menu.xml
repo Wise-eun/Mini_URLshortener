@@ -21,7 +21,7 @@
         />
 
     <item
-        android:id="@+id/tab_graph"
+        android:id="@+id/tab_chart"
         app:showAsAction="always"
         android:enabled="true"
         android:icon="@drawable/icon_graph"
