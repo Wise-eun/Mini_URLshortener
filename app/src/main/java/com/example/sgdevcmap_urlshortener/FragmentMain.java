@@ -19,6 +19,8 @@ public class FragmentMain extends Fragment {
     private EditText editText_OriginURL;
     private TextView textView_ShortenURL;
 
+    char[] base62 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
+
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
@@ -32,13 +34,24 @@ public class FragmentMain extends Fragment {
         button_Shortener.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                url_origin = editText_OriginURL.getText().toString();
-                textView_ShortenURL.setText(url_origin);
+                long num = Long.parseLong( editText_OriginURL.getText().toString());
+                textView_ShortenURL.setText(encode(num));
             }
         });
         return view;
 
     }
 
+    private String encode(long value)
+    {
+        StringBuilder sb = new StringBuilder();
+        do{
+            int i = (int)(value % 62);
+            sb.append(base62[i]);
+            value /= 62;
+        }while (value > 0);
+
+        return sb.toString();
+    }
 
 }
