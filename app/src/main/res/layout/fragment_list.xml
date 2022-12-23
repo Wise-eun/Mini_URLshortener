@@ -13,6 +13,7 @@
         android:layout_marginTop="116dp"
         android:text="Mini \n URL Shortener"
         android:textAlignment="center"
+
         android:textColor="#000000"
         android:textSize="48sp"
         android:textStyle="bold"
@@ -35,10 +36,12 @@
         app:layout_constraintTop_toBottomOf="@+id/text_Title" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleer_urllist"
+        android:id="@+id/recycler_urllist"
         android:layout_width="350dp"
         android:layout_height="400dp"
-
+        android:foregroundGravity="center"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/text_ListComment"
         app:layout_constraintStart_toStartOf="@+id/text_ListComment"
         app:layout_constraintTop_toBottomOf="@+id/text_ListComment" />

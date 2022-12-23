@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -12,18 +14,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
+public class MainActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private FragmentURLchart fragmentURLchart= new FragmentURLchart();
     private FragmentURLlist fragmentURLlist= new FragmentURLlist();
     private FragmentMain fragmentMain= new FragmentMain();
 
-
+    public ArrayList<ListData> items = new ArrayList<>();
 
 
     @Override
@@ -55,5 +60,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     }
+
+
 
 }

@@ -7,10 +7,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 
 public class FragmentMain extends Fragment {
     private static String url_origin;
@@ -36,6 +42,7 @@ public class FragmentMain extends Fragment {
             public void onClick(View view) {
                 long num = Long.parseLong( editText_OriginURL.getText().toString());
                 textView_ShortenURL.setText(encode(num));
+
             }
         });
         return view;
@@ -53,5 +60,7 @@ public class FragmentMain extends Fragment {
 
         return sb.toString();
     }
+
+
 
 }
