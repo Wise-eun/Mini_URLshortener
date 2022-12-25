@@ -63,7 +63,7 @@ return view;
 
     public void GetURLlist( ArrayList<ListData> items)
     {
-        String URL = "http://auddms.ivyro.net/showURLlist.php";
+        String URL = "http://192.168.0.155/showURLlist.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
@@ -75,7 +75,7 @@ return view;
                 String[] strArr = response.split("\"");
 
                 for(int i=1;i<strArr.length;i+=4){
-                    items.add(new ListData("http://" +strArr[i], "http://auddms.ivyro.net/" + strArr[i+2]));
+                    items.add(new ListData(strArr[i], "http://192.168.0.155/" + strArr[i+2]));
                 }
 
                 adapter = new Adapter(items);
