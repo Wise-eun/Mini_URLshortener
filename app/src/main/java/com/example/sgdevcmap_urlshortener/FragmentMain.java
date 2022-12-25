@@ -46,7 +46,6 @@ public class FragmentMain extends Fragment {
     ClipboardManager clipboardManager;
     View view;
     char[] base62 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
-String checkHTTP = "https://";
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
          view = inflater.inflate(R.layout.fragment_main, container, false);
@@ -72,9 +71,9 @@ String checkHTTP = "https://";
                 url_origin =  editText_OriginURL.getText().toString();
                 AlertDialog.Builder errorDialog = new AlertDialog.Builder(getActivity());
                 errorDialog.setTitle("ERROR");
-if(!url_origin.startsWith("http://"))
+if(!url_origin.startsWith("https://") && !url_origin.startsWith("http://"))
 {
-    errorDialog.setMessage("URL형식은 http://로 시작되어야합니다.");
+    errorDialog.setMessage("URL형식은 http://또는 https:// 로 시작되어야합니다.");
     errorDialog.setPositiveButton("확인",null);
     errorDialog.show();
 }
@@ -138,7 +137,7 @@ Response.Listener<String> responseListener = new Response.Listener<String>() {
             boolean success = jsonResponse.getBoolean("success");
             if(success) //이미 URL이 저장되어있는 경우
             {     int length = jsonResponse.length();
-                shortenURL = "http://192.168.0.155/" + jsonResponse.getString("SHORT_URL");
+                shortenURL = "https://192.168.0.155/" + jsonResponse.getString("SHORT_URL");
                 textView_ShortenURL.setText(shortenURL);
 
             }
@@ -158,7 +157,7 @@ ValidateURLRequest validateURLRequest = new ValidateURLRequest(url_origin, respo
     }
     public void GetHighestID( )
     {
-        String URL = "http://192.168.0.155/getHighestID.php";
+        String URL = "https://192.168.0.155/getHighestID.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
@@ -184,7 +183,7 @@ ValidateURLRequest validateURLRequest = new ValidateURLRequest(url_origin, respo
 
 
     public void RegisterURL( ) {
-        shortenURL ="http://192.168.0.155/" + encode(urlID.longValue());
+        shortenURL ="https://192.168.0.155/" + encode(urlID.longValue());
         textView_ShortenURL.setText(shortenURL);
 
 

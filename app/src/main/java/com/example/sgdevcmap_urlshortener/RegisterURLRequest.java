@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterURLRequest extends StringRequest {
-    final static private String URL = "http://192.168.0.155/registerURL.php";
+    final static private String URL = "https://192.168.0.155/registerURL.php";
     private Map<String, String> map;
 
     public RegisterURLRequest(BigInteger ID, String ORIGIN_URL, String SHORT_URL, Response.Listener<String>listener)

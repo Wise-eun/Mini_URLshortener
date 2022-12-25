@@ -21,8 +21,17 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class FragmentURLlist extends Fragment {
     static RequestQueue requestQueue;
@@ -41,13 +50,7 @@ public RecyclerView.Adapter adapter;
         ArrayList<ListData> items = new ArrayList<>();
 
 
-
-
-
-
         recyclerView = (RecyclerView)view.findViewById(R.id.recycler_urllist);
-        //recyclerView.setHasFixedSize(true);
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
@@ -63,7 +66,54 @@ return view;
 
     public void GetURLlist( ArrayList<ListData> items)
     {
-        String URL = "http://192.168.0.155/showURLlist.php";
+
+
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new java.security.cert.X509Certificate[]{};
+            }
+
+            @Override
+            public void checkClientTrusted(
+                    java.security.cert.X509Certificate[] chain,
+                    String authType)
+                    throws java.security.cert.CertificateException {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void checkServerTrusted(
+                    java.security.cert.X509Certificate[] chain,
+                    String authType)
+                    throws java.security.cert.CertificateException {
+                // TODO Auto-generated method stub
+            }
+        }};
+
+        // Install the all-trusting trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        HostnameVerifier allHostsValid = new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                //특정 hostname만 승인을 해주는 형태
+                if(hostname.equalsIgnoreCase("192.168.0.155")) //내가 우회하고자하는 url 주소를 넣어준다.
+                    return true;
+                else
+                    return false;
+            }
+        };
+
+        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+
+        String URL = "https://192.168.0.155/showURLlist.php";
+
 
         StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
@@ -72,6 +122,7 @@ return view;
                 response = response.replaceAll("\\]","");
                 response = response.replaceAll(",","");
                 //Toast.makeText(getActivity().getApplicationContext(), "응답 : " + response, Toast.LENGTH_SHORT).show();
+                response = response.replaceAll("\\\\","");
                 String[] strArr = response.split("\"");
 
                 for(int i=1;i<strArr.length;i+=4){
@@ -80,13 +131,14 @@ return view;
 
                 adapter = new Adapter(items);
                 recyclerView.setAdapter(adapter);
-                Log.e("Log","count = " + Integer.toString(adapter.getItemCount()));
+
             }
 
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getActivity().getApplicationContext(), "에러 : " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("ERROR",error.getMessage());
             }
         });
 
