@@ -35,37 +35,33 @@ import javax.net.ssl.X509TrustManager;
 
 public class FragmentURLlist extends Fragment {
     static RequestQueue requestQueue;
-public RecyclerView recyclerView;
-public RecyclerView.Adapter adapter;
+    public RecyclerView recyclerView;
+    public RecyclerView.Adapter adapter;
 
 
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        if(requestQueue == null)
-        {
+        if (requestQueue == null) {
             requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         }
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_list, container, false);
         ArrayList<ListData> items = new ArrayList<>();
 
 
-        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_urllist);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_urllist);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
 
-        GetURLlist(items );
+        GetURLlist(items);
 
 
-
-return view;
+        return view;
 
 
     }
 
-    public void GetURLlist( ArrayList<ListData> items)
-    {
+    public void GetURLlist(ArrayList<ListData> items) {
 
 
         String URL = "https://192.168.0.155/showURLlist.php";
@@ -74,15 +70,14 @@ return view;
         StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                response = response.replaceAll("\\[","");
-                response = response.replaceAll("\\]","");
-                response = response.replaceAll(",","");
-                //Toast.makeText(getActivity().getApplicationContext(), "응답 : " + response, Toast.LENGTH_SHORT).show();
-                response = response.replaceAll("\\\\","");
+                response = response.replaceAll("\\[", "");
+                response = response.replaceAll("\\]", "");
+                response = response.replaceAll(",", "");
+                response = response.replaceAll("\\\\", "");
                 String[] strArr = response.split("\"");
 
-                for(int i=1;i<strArr.length;i+=4){
-                    items.add(new ListData(strArr[i], "http://192.168.0.155/" + strArr[i+2]));
+                for (int i = 1; i < strArr.length; i += 4) {
+                    items.add(new ListData(strArr[i], "http://192.168.0.155/" + strArr[i + 2]));
                 }
 
                 adapter = new Adapter(items);
@@ -94,7 +89,7 @@ return view;
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getActivity().getApplicationContext(), "에러 : " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("ERROR",error.getMessage());
+                Log.e("ERROR", error.getMessage());
             }
         });
 
@@ -103,8 +98,6 @@ return view;
         requestQueue.add(request);
 
     }
-
-
 
 
 }

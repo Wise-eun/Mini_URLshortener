@@ -41,17 +41,16 @@ public class FragmentMain extends Fragment {
     private EditText editText_OriginURL;
     private TextView textView_ShortenURL;
     static RequestQueue requestQueue;
-    private  String shortenURL;
+    private String shortenURL;
     private BigInteger urlID;
     ClipboardManager clipboardManager;
     View view;
     char[] base62 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-         view = inflater.inflate(R.layout.fragment_main, container, false);
+        view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        if(requestQueue == null)
-        {
+        if (requestQueue == null) {
             requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         }
 
@@ -68,32 +67,32 @@ public class FragmentMain extends Fragment {
         button_Shortener.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                url_origin =  editText_OriginURL.getText().toString();
+                url_origin = editText_OriginURL.getText().toString();
                 AlertDialog.Builder errorDialog = new AlertDialog.Builder(getActivity());
                 errorDialog.setTitle("ERROR");
-if(!url_origin.startsWith("https://") && !url_origin.startsWith("http://"))
-{
-    errorDialog.setMessage("URL형식은 http://또는 https:// 로 시작되어야합니다.");
-    errorDialog.setPositiveButton("확인",null);
-    errorDialog.show();
-}
-else if(!Patterns.WEB_URL.matcher(url_origin).matches())
-{
-    errorDialog.setMessage("유효하지 않은 URL 입니다.");
-    errorDialog.setPositiveButton("확인",null);
-    errorDialog.show();
-}
-else {
-    CheckURL();
-    textView_ShortenURL.setVisibility(View.VISIBLE);
-    button_Copy.setVisibility(View.VISIBLE);
+                if (!url_origin.startsWith("https://") && !url_origin.startsWith("http://")) {
+                    errorDialog.setMessage("URL형식은 http://또는 https:// 로 시작되어야합니다.");
+                    errorDialog.setPositiveButton("확인", null);
+                    errorDialog.show();
+                } else if (!Patterns.WEB_URL.matcher(url_origin).matches()) {
+                    errorDialog.setMessage("유효하지 않은 URL 입니다.");
+                    errorDialog.setPositiveButton("확인", null);
+                    errorDialog.show();
+                } else if (url_origin.startsWith("http://192.168.0.155/")) {
+                    errorDialog.setMessage("이미 압축된 링크는 다시 압축할 수 없습니다.");
+                    errorDialog.setPositiveButton("확인", null);
+                    errorDialog.show();
+                } else {
+                    CheckURL();
+                    textView_ShortenURL.setVisibility(View.VISIBLE);
+                    button_Copy.setVisibility(View.VISIBLE);
 
-    ClipData clipData = ClipData.newPlainText("URL", shortenURL);
-    clipboardManager.setPrimaryClip((clipData));
+                    ClipData clipData = ClipData.newPlainText("URL", shortenURL);
+                    clipboardManager.setPrimaryClip((clipData));
 
-    Toast.makeText(view.getContext(), "URL이 복사되었습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "URL이 복사되었습니다.", Toast.LENGTH_SHORT).show();
 
-}
+                }
             }
         });
 
@@ -106,107 +105,79 @@ else {
                 Toast.makeText(view.getContext(), "URL이 복사되었습니다.", Toast.LENGTH_SHORT).show();
             }
         });
-
-
         return view;
 
     }
 
-    private String encode(long value)
-    {
+    private String encode(long value) {
         StringBuilder sb = new StringBuilder();
-        do{
-            int i = (int)(value % 62);
+        do {
+            int i = (int) (value % 62);
             sb.append(base62[i]);
             value /= 62;
-        }while (value > 0);
-
+        } while (value > 0);
         return sb.toString();
     }
 
-    public void CheckURL( )
-    {
-Response.Listener<String> responseListener = new Response.Listener<String>() {
-    @Override
-    public void onResponse(String response) {
-        try {
-            Log.e("LOG RESPONSE",response);
-
-            JSONObject jsonResponse= new JSONObject(response);
-
-            boolean success = jsonResponse.getBoolean("success");
-            if(success) //이미 URL이 저장되어있는 경우
-            {     int length = jsonResponse.length();
-                shortenURL = "http://192.168.0.155/" + jsonResponse.getString("SHORT_URL");
-                textView_ShortenURL.setText(shortenURL);
-
-            }
-            else // DB에 없는 URL 일 경우, 새로 인코딩해서 서버에다가 저장하기
-            {
-                GetHighestID( );
-
-            }
-        } catch (JSONException e) {
-            Log.e("LOG","ERROR");
-            e.printStackTrace();
-        }
-    }
-};
-ValidateURLRequest validateURLRequest = new ValidateURLRequest(url_origin, responseListener);
-        requestQueue.add(validateURLRequest);
-    }
-    public void GetHighestID( )
-    {
-        String URL = "https://192.168.0.155/getHighestID.php";
-
-        StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+    // DB에 저장되어있는 URL인지 확인하는 함수
+    public void CheckURL() {
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                urlID = new BigInteger(response);
-                urlID = urlID.add(new BigInteger("1"));
-                Log.e("LOG","url ID" + urlID.toString());
-                RegisterURL();
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+
+                    boolean success = jsonResponse.getBoolean("success");
+                    if (success) //이미 URL이 저장되어있는 경우
+                    {
+                        shortenURL = "http://192.168.0.155/" + jsonResponse.getString("SHORT_URL");
+                        textView_ShortenURL.setText(shortenURL);
+
+                        ClipData clipData = ClipData.newPlainText("URL", shortenURL);
+                        clipboardManager.setPrimaryClip((clipData));
+
+                        Toast.makeText(view.getContext(), "URL이 복사되었습니다.", Toast.LENGTH_SHORT).show();
+
+
+                    } else // DB에 없는 URL 일 경우, 새로 인코딩해서 서버에다가 저장하기
+                    {
+                        RegisterURL();
+                    }
+                } catch (JSONException e) {
+                    Log.e("LOG", "ERROR");
+                    e.printStackTrace();
+                }
             }
-
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity().getApplicationContext(), "에러 : " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        request.setShouldCache(false);
-        requestQueue.add(request);
-
+        };
+        ValidateURLRequest validateURLRequest = new ValidateURLRequest(url_origin, responseListener);
+        requestQueue.add(validateURLRequest);
     }
 
-
-    public void RegisterURL( ) {
-        shortenURL ="https://192.168.0.155/" + encode(urlID.longValue());
-        textView_ShortenURL.setText(shortenURL);
+    public void RegisterURL() {
 
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
+                if (!response.equals("fail")) {
 
-                if(response.equals("success"))
-                {
+                    urlID = new BigInteger(response);
+
+                    shortenURL = "https://192.168.0.155/" + encode(urlID.longValue());
+                    textView_ShortenURL.setText(shortenURL);
 
                     ClipData clipData = ClipData.newPlainText("URL", "http://192.168.0.155/" + encode(urlID.longValue()));
                     clipboardManager.setPrimaryClip((clipData));
 
                     Toast.makeText(view.getContext(), "URL이 복사되었습니다.", Toast.LENGTH_SHORT).show();
 
-                }
-                else
-                    Log.e("LOG" , "DB에 정보넣기 실패!");
+                } else
+                    Log.e("LOG", "DB에 정보넣기 실패!");
 
             }
         };
-        RegisterURLRequest registerURLRequest = new RegisterURLRequest(urlID,url_origin, encode(urlID.longValue()), responseListener);
+        RegisterURLRequest registerURLRequest = new RegisterURLRequest(url_origin, responseListener);
         requestQueue.add(registerURLRequest);
     }
 

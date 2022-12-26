@@ -28,7 +28,6 @@ public class ListData  {
     public void setTextview_originURL(String textview_originURL) {
         this.textview_originURL = textview_originURL;
     }
-
     public void setTextview_shortenURL(String textview_shortenURL) {
         this.textview_shortenURL = textview_shortenURL;
     }

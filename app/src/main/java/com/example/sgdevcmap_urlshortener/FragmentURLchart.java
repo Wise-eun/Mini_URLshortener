@@ -51,28 +51,25 @@ public class FragmentURLchart extends Fragment {
     View view;
     BarChart chart;
     ArrayList<String> xAxistLabel;
-    int[] colorArray = new int[] {Color.parseColor("#0064CD"), Color.parseColor("#1E82CD"),Color.parseColor("#46AAEB"),Color.parseColor("#5ABEF5"), Color.parseColor("#87CEFA")};
+    int[] colorArray = new int[]{Color.parseColor("#0064CD"), Color.parseColor("#1E82CD"), Color.parseColor("#46AAEB"), Color.parseColor("#5ABEF5"), Color.parseColor("#87CEFA")};
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        view =inflater.inflate(R.layout.fragment_chart, container, false);
-                chart = view.findViewById(R.id.chart_url);
+        view = inflater.inflate(R.layout.fragment_chart, container, false);
+        chart = view.findViewById(R.id.chart_url);
 
 
-        if(requestQueue == null)
-        {
+        if (requestQueue == null) {
             requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         }
         GetURLlist();
         return view;
     }
 
-    public void GetURLlist()
-    {
+    public void GetURLlist() {
 
 
         String URL = "https://192.168.0.155/getURLcount.php";
-
-//ArrayList<String> xAxistLabel = new ArrayList<>();
 
         ArrayList<BarEntry> chartData = new ArrayList<>();
         StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
@@ -85,31 +82,27 @@ public class FragmentURLchart extends Fragment {
                     LegendEntry[] legendEntries = new LegendEntry[5];
 
                     String data;
-                    for (int i = 0; i < 5; i++)
-                    {
+                    for (int i = 0; i < 5; i++) {
                         item = jsonArray.getJSONObject(i);
-                       String url = item.getString("ORIGIN_URL");
+                        String url = item.getString("ORIGIN_URL");
                         String count = item.getString("COUNT");
                         LegendEntry entry = new LegendEntry();
-                        entry.formColor =colorArray[i];
+                        entry.formColor = colorArray[i];
                         entry.label = url;
                         legendEntries[i] = entry;
-                        Log.e("URL",url);
-                        Log.e("COUNT",count);
-                        chartData.add(new BarEntry(i,Float.parseFloat(count)));
+                        chartData.add(new BarEntry(i, Float.parseFloat(count)));
 
                     }
 
 
-                    BarDataSet barDataSet = new BarDataSet(chartData,"");
-                   // chart.getDescription().isEnabled() = false;
+                    BarDataSet barDataSet = new BarDataSet(chartData, "");
                     barDataSet.setColors(colorArray);
                     barDataSet.setValueTextColor(Color.BLACK);
                     barDataSet.setValueTextSize(13f);
                     barDataSet.setValueFormatter(new ValueFormatter() {
                         @Override
                         public String getFormattedValue(float value) {
-                            return (String.valueOf((int)value));
+                            return (String.valueOf((int) value));
                         }
                     });
 
@@ -136,14 +129,12 @@ public class FragmentURLchart extends Fragment {
                     chart.setFitBars(true);
                     chart.setData(barData);
                     chart.getDescription().setText("URLCOUNT");
-                     chart.animateY(1000);
-                    chart.setExtraOffsets(5f,5f,5f,20f);
+                    chart.animateY(1000);
+                    chart.setExtraOffsets(5f, 5f, 5f, 20f);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
 
 
             }
@@ -152,7 +143,7 @@ public class FragmentURLchart extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getActivity().getApplicationContext(), "에러 : " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("ERROR",error.getMessage());
+                Log.e("ERROR", error.getMessage());
             }
         });
 
@@ -161,7 +152,6 @@ public class FragmentURLchart extends Fragment {
         requestQueue.add(request);
 
     }
-
 
 
 }

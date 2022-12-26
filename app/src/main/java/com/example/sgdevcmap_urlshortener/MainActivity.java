@@ -31,9 +31,9 @@ import javax.net.ssl.X509TrustManager;
 public class MainActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
-    private FragmentURLchart fragmentURLchart= new FragmentURLchart();
-    private FragmentURLlist fragmentURLlist= new FragmentURLlist();
-    private FragmentMain fragmentMain= new FragmentMain();
+    private FragmentURLchart fragmentURLchart = new FragmentURLchart();
+    private FragmentURLlist fragmentURLlist = new FragmentURLlist();
+    private FragmentMain fragmentMain = new FragmentMain();
 
     public ArrayList<ListData> items = new ArrayList<>();
 
@@ -42,8 +42,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
+//46~87 : SSL인증 우회 (http 접속 목적)
         TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
             public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                 return new java.security.cert.X509Certificate[]{};
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }};
 
-        // Install the all-trusting trust manager
         try {
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
@@ -79,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean verify(String hostname, SSLSession session) {
                 //특정 hostname만 승인을 해주는 형태
-                if(hostname.equalsIgnoreCase("192.168.0.155")) //내가 우회하고자하는 url 주소를 넣어준다.
+                if (hostname.equalsIgnoreCase("192.168.0.155"))
                     return true;
                 else
                     return false;
@@ -100,22 +98,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    class FragmentSelectedListener implements BottomNavigationView.OnNavigationItemSelectedListener{
+    class FragmentSelectedListener implements BottomNavigationView.OnNavigationItemSelectedListener {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-            if(item.getItemId() == R.id.tab_list)
-                transaction.replace(R.id.frameLayout,fragmentURLlist).commitAllowingStateLoss();
-            else if(item.getItemId() == R.id.tab_chart)
-                transaction.replace(R.id.frameLayout,fragmentURLchart).commitAllowingStateLoss();
-            else if(item.getItemId() == R.id.tab_home)
-                transaction.replace(R.id.frameLayout,fragmentMain).commitAllowingStateLoss();
+            if (item.getItemId() == R.id.tab_list)
+                transaction.replace(R.id.frameLayout, fragmentURLlist).commitAllowingStateLoss();
+            else if (item.getItemId() == R.id.tab_chart)
+                transaction.replace(R.id.frameLayout, fragmentURLchart).commitAllowingStateLoss();
+            else if (item.getItemId() == R.id.tab_home)
+                transaction.replace(R.id.frameLayout, fragmentMain).commitAllowingStateLoss();
 
             return true;
         }
     }
-
 
 
 }
