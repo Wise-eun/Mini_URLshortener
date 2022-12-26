@@ -12,11 +12,11 @@
 
 	while($row = mysqli_fetch_array($query))
 	{
-array_push($result,array($row[1],$row[2]));
+array_push($result,array('ORIGIN_URL'=>$row[1],'SHORT_URL'=>$row[2]));
 	}
 
 
-	echo json_encode($result);
+	echo json_encode(array("URLLIST"=>$result));
 	
 
 ?>

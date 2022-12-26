@@ -21,6 +21,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -70,19 +74,27 @@ public class FragmentURLlist extends Fragment {
         StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                response = response.replaceAll("\\[", "");
-                response = response.replaceAll("\\]", "");
-                response = response.replaceAll(",", "");
-                response = response.replaceAll("\\\\", "");
-                String[] strArr = response.split("\"");
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
 
-                for (int i = 1; i < strArr.length; i += 4) {
-                    items.add(new ListData(strArr[i], "http://192.168.0.155/" + strArr[i + 2]));
+                    JSONArray jsonArray = jsonObject.getJSONArray("URLLIST");
+                    JSONObject item;
+
+                    for (int i = 0; i < jsonArray.length(); i ++) {
+                        item = jsonArray.getJSONObject(i);
+                        String originURL = item.getString("ORIGIN_URL");
+                        String shortURL = item.getString("SHORT_URL");
+                        items.add(new ListData(originURL, "http://192.168.0.155/" + shortURL));
+
+                    }
+
+                    adapter = new Adapter(items);
+                    recyclerView.setAdapter(adapter);
+
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
                 }
-
-                adapter = new Adapter(items);
-                recyclerView.setAdapter(adapter);
-
             }
 
         }, new Response.ErrorListener() {

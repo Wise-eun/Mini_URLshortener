@@ -13,10 +13,6 @@
 	while($row = mysqli_fetch_array($query))
 	{
 	   array_push($result,array('ORIGIN_URL'=>$row[0], 'COUNT'=>$row[1]));
-	  // echo $row['ORIGIN_URL'];
-	  // echo ",";
-	  // echo $row['COUNT'];
-	  // echo ",";
 	}
 
 
