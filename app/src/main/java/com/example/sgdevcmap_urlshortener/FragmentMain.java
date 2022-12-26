@@ -137,7 +137,7 @@ Response.Listener<String> responseListener = new Response.Listener<String>() {
             boolean success = jsonResponse.getBoolean("success");
             if(success) //이미 URL이 저장되어있는 경우
             {     int length = jsonResponse.length();
-                shortenURL = "https://192.168.0.155/" + jsonResponse.getString("SHORT_URL");
+                shortenURL = "http://192.168.0.155/" + jsonResponse.getString("SHORT_URL");
                 textView_ShortenURL.setText(shortenURL);
 
             }

@@ -68,50 +68,6 @@ return view;
     {
 
 
-        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return new java.security.cert.X509Certificate[]{};
-            }
-
-            @Override
-            public void checkClientTrusted(
-                    java.security.cert.X509Certificate[] chain,
-                    String authType)
-                    throws java.security.cert.CertificateException {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void checkServerTrusted(
-                    java.security.cert.X509Certificate[] chain,
-                    String authType)
-                    throws java.security.cert.CertificateException {
-                // TODO Auto-generated method stub
-            }
-        }};
-
-        // Install the all-trusting trust manager
-        try {
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        HostnameVerifier allHostsValid = new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                //특정 hostname만 승인을 해주는 형태
-                if(hostname.equalsIgnoreCase("192.168.0.155")) //내가 우회하고자하는 url 주소를 넣어준다.
-                    return true;
-                else
-                    return false;
-            }
-        };
-
-        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-
         String URL = "https://192.168.0.155/showURLlist.php";
 
 

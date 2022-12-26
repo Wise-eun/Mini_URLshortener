@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Graph showing \n
-the most decremented URLs"
+ the number of times the URL\n has been reduced"
         android:textColor="#000000"
         android:textSize="20sp"
         android:textAlignment="center"
@@ -38,10 +38,11 @@ the most decremented URLs"
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/chart_url"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:layout_margin="15dp"
+        android:layout_width="371dp"
+        android:layout_height="337dp"
+android:translationY="-10dp"
 
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_ListComment" />
